@@ -9,4 +9,4 @@ C# 기반 텍스트 되감기 프로그램 입니다. 사용자가 입력한 문
     * .NET Frameworks Collections (Dictionary)
 
 ## 프로그램 사용 예제
-![example](./img/img1)
+![example](./img/img1.gif)
