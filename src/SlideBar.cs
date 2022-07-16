@@ -8,6 +8,7 @@ public class SlideBar : Panel{
     private float  m_fDragDelta = 0.0f;
     private float  m_fBackDelta = 0.0f;
     public  Panel  Thumb        = null;
+    public  Panel  Elapsed      = null;
     public  long   Maximum      = 100;
     public  long   Value        = 0;
     /*
@@ -29,6 +30,14 @@ public class SlideBar : Panel{
         Thumb.BackgroundImageLayout = ImageLayout.Stretch;
         Thumb.Enabled               = false; // 막대 트래커(Thumb)를 비활성화 안하면, 트래커 위에서 부모 컨트롤의 마우스 이벤트가 적용 X
 
+        this.Elapsed                  = new Panel();
+        Elapsed.Size                  = new Size(16,0);
+        Elapsed.Location              = new Point(0,0);
+        Elapsed.BackColor             = Color.Transparent;
+        Elapsed.BackgroundImage       = Image.FromFile("./resources/slider_elapsed.png");
+        Elapsed.BackgroundImageLayout = ImageLayout.Stretch;
+        Elapsed.Enabled               = false; // 채움 막대(Elapsed)를 비활성화 안하면, 채움 바 위에서 부모 컨트롤의 마우스 이벤트가 적용 X
+
         // 막대 트래커(Thumb)의 드래그 기능 구현 (마우스 이벤트 사용)
         this.MouseMove   += delegate(object sender, MouseEventArgs args){
             // 막대 트래커(Thumb) 위치가 슬라이드 바 영역을 벗어나면, 예외처리
@@ -36,7 +45,8 @@ public class SlideBar : Panel{
                 return;
             }
             if( m_bDragState ){
-                Thumb.Left   = args.X;
+                Elapsed.Width = args.X;
+                Thumb.Left    = args.X;
                 // 현재 슬라이드 바의 넓이와 막대 트래커(Thumb) 위치를 기반으로 현재 슬라이드의 값을 계산
                 m_fDragDelta = (float)Math.Round( ((float)args.X / ((float)this.Width - (float)Thumb.Width)) * Maximum ); 
                 // 동일한 값이 다시 들어오면 입력 방지
@@ -60,9 +70,11 @@ public class SlideBar : Panel{
         
         // 부모 요소의 크기(Size) 값이 변경 될 때마다, 막대 트래커(Thumb)의 크기를 재조정
         this.SizeChanged += delegate(object sender, EventArgs args){
-            Thumb.Size  = new Size((sender as Panel).Height,(sender as Panel).Height);
+            Thumb.Size     = new Size((sender as Panel).Height,(sender as Panel).Height);
+            Elapsed.Height = (sender as Panel).Height;
         };
 
         this.Controls.Add(Thumb);
+        this.Controls.Add(Elapsed);
     }
 }

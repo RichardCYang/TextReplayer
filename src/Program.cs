@@ -47,14 +47,13 @@ public class Program {
                     textBox.Text = s_textreplay.GetDataFromTime( timeSlider.Value );
                 }catch{}
             }
-            Console.WriteLine(timeSlider.Value);
         };
 
         // Adding Recording Button
         ImageButton srBtn     = new ImageButton();
         srBtn.Location        = new Point(10,48);
         srBtn.Size            = new Size(32,32);
-        srBtn.Anchor          = AnchorStyles.Right;
+        srBtn.Anchor          = AnchorStyles.Left;
         srBtn.AddImagePool("./resources/record_start.png");
         srBtn.AddImagePool("./resources/record_stop.png");
         srBtn.SetImage(0);
