@@ -38,7 +38,7 @@ public class SlideBar : Panel{
             if( m_bDragState ){
                 Thumb.Left   = args.X;
                 // 현재 슬라이드 바의 넓이와 막대 트래커(Thumb) 위치를 기반으로 현재 슬라이드의 값을 계산
-                m_fDragDelta = (float)Math.Round( ((float)args.X / (float)this.Width) * Maximum ); 
+                m_fDragDelta = (float)Math.Round( ((float)args.X / ((float)this.Width - (float)Thumb.Width)) * Maximum ); 
                 // 동일한 값이 다시 들어오면 입력 방지
                 if( m_fBackDelta != m_fDragDelta ){
                     m_fBackDelta = m_fDragDelta;

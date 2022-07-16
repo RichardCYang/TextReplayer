@@ -46,6 +46,7 @@ public class Program {
                     textBox.Text = trply.GetDataFromTime( timeSlider.Value );
                 }catch{}
             }
+            Console.WriteLine(timeSlider.Value);
         };
 
         // Adding Recording Button
