@@ -4,7 +4,7 @@ using System.Drawing;
 
 public class Program {
     static TextReplayer s_textreplay = new TextReplayer();
-    static bool         s_bRecord    = false;
+    static ToggleImageButton s_rsBtn = new ToggleImageButton();
 
     internal static void Main(string[] args){
         Form form = new Form();
@@ -18,7 +18,7 @@ public class Program {
         textBox.Multiline   = true;
         textBox.Anchor      = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
         textBox.TextChanged+= delegate(object sender,EventArgs args){
-            if( s_bRecord ){
+            if( s_rsBtn.ActiveState ){
                 try{
                     // Save time data
                     s_textreplay.AddRecordPoint(textBox.Text);
@@ -37,11 +37,10 @@ public class Program {
         SlideBar timeSlider      = new SlideBar();
         timeSlider.Location      = new Point(10,25);
         timeSlider.Size          = new Size(645,16);
-        timeSlider.Dock          = DockStyle.Fill;
         timeSlider.AutoSize      = false;
         timeSlider.Anchor        = AnchorStyles.Left | AnchorStyles.Right;
         timeSlider.Slide        += delegate(object sender, EventArgs args){
-            if( !s_bRecord ){
+            if( !s_rsBtn.ActiveState ){
                 try{
                     // Restore time data
                     textBox.Text = s_textreplay.GetDataFromTime( timeSlider.Value );
@@ -50,27 +49,25 @@ public class Program {
         };
 
         // Adding Recording Button
-        ImageButton srBtn     = new ImageButton();
-        srBtn.Location        = new Point(10,48);
-        srBtn.Size            = new Size(32,32);
-        srBtn.Anchor          = AnchorStyles.Left;
+        s_rsBtn.Location        = new Point(10,48);
+        s_rsBtn.Size            = new Size(32,32);
+        s_rsBtn.Anchor          = AnchorStyles.Left;
 
-        srBtn.SetHint("Start Recording");
-        srBtn.AddImagePool("./resources/record_start.png");
-        srBtn.AddImagePool("./resources/record_stop.png");
-        srBtn.SetImage(0);
+        s_rsBtn.SetHint("Start Recording");
+        s_rsBtn.AddImagePool("./resources/record_start.png");
+        s_rsBtn.AddImagePool("./resources/record_stop.png");
+        s_rsBtn.SetImage(0);
 
-        srBtn.Click    += delegate(object sender,EventArgs  args){
-            s_bRecord = !s_bRecord;
-            if(s_bRecord){
-                s_textreplay.StartRecord(textBox.Text);
-                ((ImageButton)sender).SetImage(1);
-                ((ImageButton)sender).SetHint("Stop Recording");
-            }else{
-                timeSlider.Maximum = s_textreplay.StopRecord();
-                ((ImageButton)sender).SetImage(0);
-                ((ImageButton)sender).SetHint("Start Recording");
-            }
+        s_rsBtn.Active   += delegate(object sender, EventArgs args){
+            s_textreplay.StartRecord(textBox.Text);
+            ((ImageButton)sender).SetImage(1);
+            ((ImageButton)sender).SetHint("Stop Recording");
+        };
+
+        s_rsBtn.Deactive += delegate(object sender, EventArgs args){
+            timeSlider.Maximum = s_textreplay.StopRecord();
+            ((ImageButton)sender).SetImage(0);
+            ((ImageButton)sender).SetHint("Start Recording");
         };
 
         // Adding Pause/Resume Button
@@ -79,7 +76,7 @@ public class Program {
 
         // Adding Children 
         controlBox.Controls.Add(timeSlider);
-        controlBox.Controls.Add(srBtn);
+        controlBox.Controls.Add(s_rsBtn);
         //controlBox.Controls.Add(prBtn);
         
         // Adding Children
