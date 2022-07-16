@@ -54,6 +54,8 @@ public class Program {
         srBtn.Location        = new Point(10,48);
         srBtn.Size            = new Size(32,32);
         srBtn.Anchor          = AnchorStyles.Left;
+
+        srBtn.SetHint("Start Recording");
         srBtn.AddImagePool("./resources/record_start.png");
         srBtn.AddImagePool("./resources/record_stop.png");
         srBtn.SetImage(0);
@@ -63,9 +65,11 @@ public class Program {
             if(s_bRecord){
                 s_textreplay.StartRecord(textBox.Text);
                 ((ImageButton)sender).SetImage(1);
+                ((ImageButton)sender).SetHint("Stop Recording");
             }else{
                 timeSlider.Maximum = s_textreplay.StopRecord();
                 ((ImageButton)sender).SetImage(0);
+                ((ImageButton)sender).SetHint("Start Recording");
             }
         };
 
