@@ -3,8 +3,9 @@ using System.Windows.Forms;
 using System.Drawing;
 
 public class Program {
-    static TextReplayer s_textreplay = new TextReplayer();
+    static TextReplayer      s_textreplay = new TextReplayer();
     static ToggleImageButton s_rsBtn = new ToggleImageButton();
+    static TickTimer         s_timer = new TickTimer();
 
     internal static void Main(string[] args){
         Form form = new Form();
@@ -48,6 +49,10 @@ public class Program {
             }
         };
 
+        timeSlider.SlideEnd     += delegate(object sender, EventArgs args){
+            s_timer.Assert   = true;
+        };
+
         // Adding Recording Button
         s_rsBtn.Location        = new Point(10,48);
         s_rsBtn.Size            = new Size(32,32);
@@ -81,9 +86,20 @@ public class Program {
         prBtn.AddImagePool("./resources/pause.png");
         prBtn.SetImage(0);
 
+        s_timer.Tick    += delegate(object sender, EventArgs args){
+            timeSlider.Value += 1;
+        };
+
+        s_timer.EndTick += delegate(object sender, EventArgs args){
+            prBtn.ActiveState  = false;
+            timeSlider.Value   = 0;
+        };
+
         prBtn.Active   += delegate(object sender, EventArgs args){
             ((ImageButton)sender).SetImage(1);
             ((ImageButton)sender).SetHint("Pause Record");
+            
+            s_timer.Start(TimeSpan.TicksPerMillisecond * 10);
         };
 
         prBtn.Deactive += delegate(object sender, EventArgs args){

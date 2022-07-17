@@ -7,14 +7,28 @@ public class SlideBar : Panel{
     private bool   m_bDragState = false;
     private float  m_fDragDelta = 0.0f;
     private float  m_fBackDelta = 0.0f;
+    private long   m_nValue     = 0;
     public  Panel  Thumb        = null;
     public  Panel  Elapsed      = null;
     public  long   Maximum      = 100;
-    public  long   Value        = 0;
+    public  long   Value
+    {
+        get{
+            return this.m_nValue;
+        }
+
+        set{
+            this.m_nValue = value;
+            this.FillSlide( (float)this.m_nValue );
+            // 커스텀 스크롤 이벤트 발생
+            this.Slide?.Invoke( this, EventArgs.Empty );
+        }
+    }
     /*
     * 커스텀 이벤트 핸들러
     */
     public EventHandler Slide;
+    public EventHandler SlideEnd;
     /*
     * 내부 슬라이드 막대 요소를 생성하는 클래스 생성자
     */
@@ -45,14 +59,13 @@ public class SlideBar : Panel{
                 return;
             }
             if( m_bDragState ){
-                Elapsed.Width = args.X;
-                Thumb.Left    = args.X;
+                this.FillSlide( args.X );
                 // 현재 슬라이드 바의 넓이와 막대 트래커(Thumb) 위치를 기반으로 현재 슬라이드의 값을 계산
                 m_fDragDelta = (float)Math.Round( ((float)args.X / ((float)this.Width - (float)Thumb.Width)) * Maximum ); 
                 // 동일한 값이 다시 들어오면 입력 방지
                 if( m_fBackDelta != m_fDragDelta ){
-                    m_fBackDelta = m_fDragDelta;
-                    this.Value   = (long)m_fDragDelta;
+                    m_fBackDelta  = m_fDragDelta;
+                    this.m_nValue = (long)m_fDragDelta;
                     // 커스텀 스크롤 이벤트 발생
                     Slide?.Invoke(this, EventArgs.Empty);
                 }
@@ -76,5 +89,17 @@ public class SlideBar : Panel{
 
         this.Controls.Add(Thumb);
         this.Controls.Add(Elapsed);
+    }
+    private void FillSlide( int val ){
+        // 슬라이드가 끝에 도달했을 때, 이벤트 발생
+        if( val == this.Width - this.Thumb.Width ){
+            SlideEnd?.Invoke(this, EventArgs.Empty);
+        }
+        this.Thumb.Left    = val;
+        this.Elapsed.Width = val;
+    }
+    private void FillSlide( float val ){
+        int nVal = (int)((val / (float)this.Maximum) * (this.Width - this.Thumb.Width));
+        this.FillSlide( nVal );
     }
 }
