@@ -71,13 +71,30 @@ public class Program {
         };
 
         // Adding Pause/Resume Button
-        Button prBtn   = new Button();
-        prBtn.Location = new Point(5,50);
+        ToggleImageButton prBtn = new ToggleImageButton();
+        prBtn.Location          = new Point(48,48);
+        prBtn.Size              = new Size(32,32);
+        prBtn.Anchor            = AnchorStyles.Left;
+
+        prBtn.SetHint("Play Record");
+        prBtn.AddImagePool("./resources/play.png");
+        prBtn.AddImagePool("./resources/pause.png");
+        prBtn.SetImage(0);
+
+        prBtn.Active   += delegate(object sender, EventArgs args){
+            ((ImageButton)sender).SetImage(1);
+            ((ImageButton)sender).SetHint("Pause Record");
+        };
+
+        prBtn.Deactive += delegate(object sender, EventArgs args){
+            ((ImageButton)sender).SetImage(0);
+            ((ImageButton)sender).SetHint("Play Record");
+        };
 
         // Adding Children 
         controlBox.Controls.Add(timeSlider);
         controlBox.Controls.Add(s_rsBtn);
-        //controlBox.Controls.Add(prBtn);
+        controlBox.Controls.Add(prBtn);
         
         // Adding Children
         form.Controls.Add( textBox );
