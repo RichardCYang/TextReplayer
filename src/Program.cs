@@ -20,10 +20,8 @@ public class Program {
         textBox.Anchor      = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
         textBox.TextChanged+= delegate(object sender,EventArgs args){
             if( s_rsBtn.ActiveState ){
-                try{
-                    // Save time data
-                    s_textreplay.AddRecordPoint(textBox.Text);
-                }catch{}
+                // Save time data
+                s_textreplay.AddRecordPoint(textBox.Text);
             }
         };
 
@@ -99,7 +97,7 @@ public class Program {
             ((ImageButton)sender).SetImage(1);
             ((ImageButton)sender).SetHint("Pause Record");
             
-            s_timer.Start(TimeSpan.TicksPerMillisecond * 10);
+            s_timer.Start(10000);
         };
 
         prBtn.Deactive += delegate(object sender, EventArgs args){

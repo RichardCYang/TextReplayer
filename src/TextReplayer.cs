@@ -26,8 +26,11 @@ public class TextReplayer {
     */
     public long GetCurrentTime(){
         // 정확도 향상을 위해 Tick을 이용하여 밀리초로 변환하여 반환
-        return (long)((double)( DateTime.Now.Ticks - curTick ) * 0.000001);
+        return (long)((double)(DateTime.Now.Ticks - curTick) * 0.0001);
     }
+    /*
+    * 총 Tick 값을 밀리초로 변환하여 반환하는 메서드
+    */
     public long StopRecord(){
         // 기록을 종료하면 기록을 시작하고 나서, 종료될 때 까지의 총 시간을 반환하고 종료
         return GetCurrentTime();
@@ -41,6 +44,10 @@ public class TextReplayer {
     }
     public void AddRecordPoint(string data){
         // 레코드 기록 자료구조에 저장시간,데이터를 키-값 쌍으로 저장
-        this.records.Add(GetCurrentTime(),data);
+        if( !this.records.ContainsKey(GetCurrentTime()) ){
+            this.records.Add(GetCurrentTime(),data);
+        }else{
+            this.records.Add(GetCurrentTime() + 1,data);
+        }
     }
 }
